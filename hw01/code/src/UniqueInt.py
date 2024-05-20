@@ -1,72 +1,46 @@
 #!/usr/bin/python3
 import os
 
-class UniqueInt:
-    def __init__(self):
-        self.min_value = -1023
-        self.max_value = 1023
-        self.range_size = self.max_value - self.min_value + 1
-        self.seen_integers = [False] * self.range_size
+def is_integer(value):
+    try:
+        int(value)
+        return True
+    except Exception:
+        return False
     
-    def _index(self, value):
-        return value - self.min_value
+
+input_dir = os.getcwd()+'\hw01\sample_inputs'
+output_dir = os.getcwd()+'\hw01\sample_results'
+
+# Iterate through files in the target directory
+for filename in os.listdir(input_dir):
+    file_path = os.path.join(input_dir, filename)
+    output_path = os.path.join(output_dir, f"{filename}_results.txt")
     
-    def read_next_item_from_file(self, inputFileStream):
-        while True:
-            line = inputFileStream.readline()
-            if not line:
-                return None
-            line = line.strip()
-            if line == "":
-                continue
-            parts = line.split()
-            if len(parts) != 1:
-                continue
-            try:
-                value = int(parts[0])
-                if self.min_value <= value <= self.max_value:
-                    return value
-            except ValueError:
+    with(open(file_path, 'r') as file):
+        file_lines = file.readlines()
+        my_dict = {}
+        unique = []  
+        for num in file_lines:
+            num = num.strip()
+            if not is_integer(num):
                 continue
 
-    def process_file(self, inputFilePath, outputFilePath):
-        try:
-            with open(inputFilePath, 'r') as inputFileStream:
-                while True:
-                    value = self.read_next_item_from_file(inputFileStream)
-                    if value is None:
-                        break
-                    index = self._index(value)
-                    self.seen_integers[index] = True
-        except IOError as e:
-            print(f"Error reading file {inputFilePath}: {e}")
-            return
+            if int(num) not in range(-1023, 1024):
+                continue
 
-        unique_integers = []
-        for i in range(self.range_size):
-            if self.seen_integers[i]:
-                unique_integers.append(self.min_value + i)
+            if num in my_dict.keys():
+                my_dict[num] += 1
+            else:    
+                my_dict[num] = 1
 
-        try:
-            with open(outputFilePath, 'w') as outputFileStream:
-                for value in unique_integers:
-                    outputFileStream.write(f"{value}\n")
-        except IOError as e:
-            print(f"Error writing file {outputFilePath}: {e}")
+        print(my_dict)        
 
-def main():
-    input_dir = '/dsa/hw01/sample_inputs/'
-    output_dir = '/dsa/hw01/sample_results/'
+        for key in my_dict.keys():
+            if my_dict[key] == 1:
+                unique.append(key)
 
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    for input_filename in os.listdir(input_dir):
-        if input_filename.endswith('.txt'):
-            input_file_path = os.path.join(input_dir, input_filename)
-            output_file_path = os.path.join(output_dir, f"{input_filename}_result.txt")
-            unique_int_processor = UniqueInt()
-            unique_int_processor.process_file(input_file_path, output_file_path)
-
-if __name__ == "__main__":
-    main()
+        with(open(output_path, 'w') as output_file):
+            for num in unique:
+                output_file.write(num)
+                output_file.write('\n')
