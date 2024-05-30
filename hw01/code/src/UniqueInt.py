@@ -40,22 +40,7 @@ for filename in os.listdir(input_dir):
             if my_dict[key] == 1:
                 unique.append(key)
 
-<<<<<<< HEAD
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    for input_filename in os.listdir(input_dir):
-        if input_filename.endswith('.txt'):
-            input_file_path = os.path.join(input_dir, input_filename)
-            output_file_path = os.path.join(output_dir, f"{input_filename}_result.txt")
-            unique_int_processor = UniqueInt()
-            unique_int_processor.process_file(input_file_path, output_file_path)
-
-if __name__ == "__main__":
-    main()
-=======
         with(open(output_path, 'w') as output_file):
             for num in unique:
                 output_file.write(num)
                 output_file.write('\n')
->>>>>>> ad38b76a6d0f1661219c068b5441e3136533f94b
